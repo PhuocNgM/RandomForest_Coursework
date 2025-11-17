@@ -1,0 +1,78 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+eggs/
+parts/
+wheels/
+pip-wheel-metadata/
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+python_env/    # local virtualenv included in this repo
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs, databases, runtime files
+*.log
+*.sqlite3
+*.db
+*.pid
+*.seed
+
+# Environment files
+.env
+.env.* 
+.envrc
+
+# Compiled files
+*.pyc
+*.pyo
+*.pyd
+
+# Misc
+.cache/
+*.bak
+*.swp
+
+# Data (uncomment if you want to ignore large/derived datasets)
+data/
+# keep a README or placeholder if needed:
+# !data/.gitkeep
