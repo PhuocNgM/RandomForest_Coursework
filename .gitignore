@@ -59,7 +59,7 @@ Thumbs.db
 
 # Environment files
 .env
-.env.* 
+.env.*
 .envrc
 
 # Compiled files

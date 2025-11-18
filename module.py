@@ -1,8 +1,9 @@
+from collections import Counter
 from math import sqrt
 from random import Random
+
 import numpy as np
 import pandas as pd
-from collections import Counter
 
 # module.py
 # Custom Random Forest classifier implementation (API similar to sklearn)
@@ -19,8 +20,17 @@ class CustomRandomForestClassifier:
       - predict_proba(X)
     Works with numpy arrays or pandas DataFrame/Series.
     """
-    def __init__(self, n_estimators=10, max_depth=10, min_samples_split=2,
-                 max_features='sqrt', bootstrap=True, max_samples=1.0, random_state=None):
+
+    def __init__(
+        self,
+        n_estimators=10,
+        max_depth=10,
+        min_samples_split=2,
+        max_features="sqrt",
+        bootstrap=True,
+        max_samples=1.0,
+        random_state=None,
+    ):
         self.n_estimators = int(n_estimators)
         self.max_depth = int(max_depth)
         self.min_samples_split = int(min_samples_split)
@@ -74,7 +84,7 @@ class CustomRandomForestClassifier:
 
     def _get_split(self, dataset, n_features):
         class_values = list(set(row[-1] for row in dataset))
-        b_index, b_value, b_score, b_groups = None, None, float('inf'), None
+        b_index, b_value, b_score, b_groups = None, None, float("inf"), None
         features = []
         while len(features) < n_features:
             idx = self._rng.randrange(len(dataset[0]) - 1)
@@ -85,28 +95,35 @@ class CustomRandomForestClassifier:
                 groups = self._test_split(index, row[index], dataset)
                 gini = self._gini_index(groups, class_values)
                 if gini < b_score:
-                    b_index, b_value, b_score, b_groups = index, row[index], gini, groups
-        return {'index': b_index, 'value': b_value, 'groups': b_groups}
+                    b_index, b_value, b_score, b_groups = (
+                        index,
+                        row[index],
+                        gini,
+                        groups,
+                    )
+        return {"index": b_index, "value": b_value, "groups": b_groups}
 
     def _split(self, node, depth, n_features):
-        left, right = node['groups']
-        del node['groups']
+        left, right = node["groups"]
+        del node["groups"]
         if not left or not right:
-            node['left'] = node['right'] = self._to_terminal(left + right)
+            node["left"] = node["right"] = self._to_terminal(left + right)
             return
         if depth >= self.max_depth:
-            node['left'], node['right'] = self._to_terminal(left), self._to_terminal(right)
+            node["left"], node["right"] = self._to_terminal(left), self._to_terminal(
+                right
+            )
             return
         if len(left) <= self.min_samples_split:
-            node['left'] = self._to_terminal(left)
+            node["left"] = self._to_terminal(left)
         else:
-            node['left'] = self._get_split(left, n_features)
-            self._split(node['left'], depth + 1, n_features)
+            node["left"] = self._get_split(left, n_features)
+            self._split(node["left"], depth + 1, n_features)
         if len(right) <= self.min_samples_split:
-            node['right'] = self._to_terminal(right)
+            node["right"] = self._to_terminal(right)
         else:
-            node['right'] = self._get_split(right, n_features)
-            self._split(node['right'], depth + 1, n_features)
+            node["right"] = self._get_split(right, n_features)
+            self._split(node["right"], depth + 1, n_features)
 
     def _build_tree(self, train, n_features):
         root = self._get_split(train, n_features)
@@ -114,14 +131,14 @@ class CustomRandomForestClassifier:
         return root
 
     def _predict_tree(self, node, row):
-        if row[node['index']] < node['value']:
-            if isinstance(node['left'], dict):
-                return self._predict_tree(node['left'], row)
-            return node['left']
+        if row[node["index"]] < node["value"]:
+            if isinstance(node["left"], dict):
+                return self._predict_tree(node["left"], row)
+            return node["left"]
         else:
-            if isinstance(node['right'], dict):
-                return self._predict_tree(node['right'], row)
-            return node['right']
+            if isinstance(node["right"], dict):
+                return self._predict_tree(node["right"], row)
+            return node["right"]
 
     # ----------------- sampling -----------------
     def _subsample(self, dataset, ratio):
@@ -134,9 +151,9 @@ class CustomRandomForestClassifier:
         dataset = self._to_dataset(X, y)
         self.n_features_in_ = (len(dataset[0]) - 1) if dataset else 0
         if isinstance(self.max_features, str):
-            if self.max_features == 'sqrt':
+            if self.max_features == "sqrt":
                 n_features = max(1, int(sqrt(self.n_features_in_)))
-            elif self.max_features == 'log2':
+            elif self.max_features == "log2":
                 n_features = max(1, int(np.log2(self.n_features_in_)))
             else:
                 n_features = self.n_features_in_
